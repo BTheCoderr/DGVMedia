@@ -4,24 +4,32 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:alt": "next dev --port 3001 --turbopack",
+    "dev:find-port": "cross-env $(npx get-port --port 3000 --silent) npm run dev -- --port $PORT",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "start:alt": "next start --port 3001",
+    "lint": "next lint",
+    "clean": "rm -rf .next node_modules && npm install",
+    "kill-ports": "npx kill-port 3000 3001 3002 3003"
   },
   "dependencies": {
+    "next": "15.3.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.1"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "@eslint/eslintrc": "^3"
+    "get-port-cli": "^3.0.0",
+    "kill-port": "^2.0.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

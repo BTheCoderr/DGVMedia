@@ -1,15 +1,9 @@
 #!/bin/bash
 
-# Simple startup script for Da Grape Vine website
+# Script to start the Next.js development server on an available port
 
-echo "🍇 Starting Da Grape Vine Media Website Development Server 🍇"
+echo "🍇 Da Grape Vine Media - Automatic Port Selection 🍇"
 echo "-----------------------------------------------------"
-
-# Check if npm is installed
-if ! command -v npm &> /dev/null; then
-    echo "❌ npm is not installed. Please install Node.js and npm first."
-    exit 1
-fi
 
 # Kill any existing Next.js processes
 echo "Checking for existing Next.js processes..."
@@ -44,13 +38,13 @@ if [ $PORT -gt $MAX_PORT ]; then
     exit 1
 fi
 
-# Install dependencies if node_modules doesn't exist
+# Install dependencies if needed
 if [ ! -d "node_modules" ]; then
     echo "📦 Installing dependencies..."
     npm install
 fi
 
-# Start the development server
+# Start the Next.js development server on the available port
 echo "🚀 Starting development server on port $PORT..."
 echo "📱 Open http://localhost:$PORT in your browser"
 echo "-----------------------------------------------------"
