@@ -11,11 +11,13 @@ export default function Home() {
       <div className="max-w-6xl w-full">
         {/* Hero Section */}
         <div className="flex flex-col items-center text-center mb-16 animate-fade-in-up">
-          <div className="w-full max-w-md mb-6">
-            <img 
+          <div className="w-full max-w-md mb-6 relative" style={{ height: '300px' }}>
+            <Image 
               src="/logo.svg" 
-              alt="Da Grape Vine Logo" 
-              className="w-full"
+              alt="Da Grape Vine Logo"
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
             />
           </div>
           <p className="text-xl md:text-2xl text-gray-700 max-w-3xl">
