@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:alt": "next dev --port 3001 --turbopack",
-    "dev:find-port": "cross-env $(npx get-port --port 3000 --silent) npm run dev -- --port $PORT",
+    "dev:find-port": "npx get-port --port 3000 | xargs -I{} next dev --port {} --turbopack",
     "build": "next build",
     "start": "next start",
     "start:alt": "next start --port 3001",
