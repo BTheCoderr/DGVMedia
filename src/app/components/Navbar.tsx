@@ -38,6 +38,9 @@ const Navbar = () => {
             <Link href="#coverage" className="text-gray-800 hover:text-[#9370DB] px-3 py-2 text-sm font-medium transition-colors">
               Coverage
             </Link>
+            <Link href="#signup" className="text-gray-800 hover:text-[#9370DB] px-3 py-2 text-sm font-medium transition-colors">
+              Subscribe
+            </Link>
             <Link href="#contact" className="text-gray-800 hover:text-[#9370DB] px-3 py-2 text-sm font-medium transition-colors">
               Contact
             </Link>
@@ -82,6 +85,9 @@ const Navbar = () => {
           </Link>
           <Link href="#coverage" className="block px-3 py-2 rounded-md text-gray-800 hover:text-[#9370DB] hover:bg-purple-50 font-medium transition-colors">
             Coverage
+          </Link>
+          <Link href="#signup" className="block px-3 py-2 rounded-md text-gray-800 hover:text-[#9370DB] hover:bg-purple-50 font-medium transition-colors">
+            Subscribe
           </Link>
           <Link href="#contact" className="block px-3 py-2 rounded-md text-gray-800 hover:text-[#9370DB] hover:bg-purple-50 font-medium transition-colors">
             Contact
