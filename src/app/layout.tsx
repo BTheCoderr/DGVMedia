@@ -1,30 +1,28 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Da Grape Vine | News Media & Entertainment",
-  description: "Da Grape Vine is a media and entertainment company amplifying the voices of inner-city, minority, and underrepresented communities in Rhode Island.",
-  keywords: "Da Grape Vine, media company, Providence, Rhode Island, news, entertainment, minority voices",
+  title: "Da Grapevine - Where The Truth And The Juice Gets Told",
+  description: "Raw. Real. Unfiltered news and stories from the communities that mainstream media overlooks.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-      </head>
-      <body className={inter.className}>
-        <Navbar />
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-black text-white min-h-screen`}>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
-} 
+}
