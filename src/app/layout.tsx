@@ -4,11 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Script from "next/script";
-import dynamic from 'next/dynamic';
-
-const FloatingNewsletter = dynamic(() => import('@/components/FloatingNewsletter'), {
-  ssr: false,
-});
+import FloatingNewsletterWrapper from '@/components/FloatingNewsletterWrapper';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -83,8 +79,8 @@ export default function RootLayout({
       <body className={`${inter.className} bg-black text-white min-h-screen`}>
         <Header />
         {children}
+        <FloatingNewsletterWrapper />
         <Footer />
-        <FloatingNewsletter />
       </body>
     </html>
   );
