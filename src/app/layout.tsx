@@ -3,8 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Script from "next/script";
+import FloatingNewsletter from "@/components/FloatingNewsletter";
 
 const inter = Inter({ subsets: ["latin"] });
+
+// Replace with your Google Analytics ID
+const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
 
 export const metadata: Metadata = {
   title: "Da Grapevine - Where The Truth And The Juice Gets Told",
@@ -55,10 +60,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+      </head>
       <body className={`${inter.className} bg-black text-white min-h-screen`}>
         <Header />
         {children}
         <Footer />
+        <FloatingNewsletter />
       </body>
     </html>
   );

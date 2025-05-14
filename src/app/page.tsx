@@ -36,6 +36,17 @@ const testimonials = [
 
 export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Mobile swipe handler for testimonials
+  const handleSwipe = (direction: number) => {
+    setActiveTestimonial((prev) => {
+      const next = prev + direction;
+      if (next < 0) return testimonials.length - 1;
+      if (next >= testimonials.length) return 0;
+      return next;
+    });
+  };
 
   return (
     <>
@@ -83,9 +94,9 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="grid md:grid-cols-2 gap-12 items-center"
+            className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
           >
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+            <div className="relative aspect-[4/3] md:aspect-[4/3] rounded-2xl overflow-hidden order-1 md:order-none">
               <Image
                 src={stories[0].image}
                 alt={stories[0].title}
@@ -97,8 +108,8 @@ export default function Home() {
                 <span className="inline-block px-3 py-1 bg-grape-600 text-white text-sm rounded-full mb-3">
                   {stories[0].category}
                 </span>
-                <h3 className="text-2xl font-bold text-white mb-2">{stories[0].title}</h3>
-                <p className="text-gray-200 line-clamp-2">{stories[0].excerpt}</p>
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{stories[0].title}</h3>
+                <p className="text-gray-200 text-sm md:text-base line-clamp-2">{stories[0].excerpt}</p>
               </div>
             </div>
             <div className="space-y-8">
@@ -460,7 +471,7 @@ export default function Home() {
           </div>
         </Section>
 
-        {/* Call to Action */}
+        {/* What Our Community Says */}
         <Section className="py-24">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">What Our Community Says</h2>
@@ -468,59 +479,101 @@ export default function Home() {
               Join hundreds of community members who trust Da Grapevine for authentic, unfiltered stories.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-gradient-to-b from-grape-900/10 to-black p-6 rounded-lg cursor-pointer"
-                onClick={() => setActiveTestimonial(index)}
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                    <Image
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      fill
-                      className="object-cover"
+          <div className="relative">
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(e, { offset, velocity }) => {
+                    if (Math.abs(offset.x) > 50) {
+                      handleSwipe(offset.x > 0 ? -1 : 1);
+                    }
+                  }}
+                  className={`bg-gradient-to-b from-grape-900/10 to-black p-6 rounded-lg cursor-pointer transform transition-all duration-300 ${
+                    index === activeTestimonial ? 'md:scale-105 z-10' : 'scale-95 opacity-50 md:opacity-100 md:scale-100'
+                  } ${index !== activeTestimonial ? 'hidden md:block' : ''}`}
+                  onClick={() => setActiveTestimonial(index)}
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-white font-medium">{testimonial.name}</div>
+                      <div className="text-gray-400 text-sm">{testimonial.role}</div>
+                    </div>
+                  </div>
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className="w-5 h-5 text-yellow-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-gray-300">{testimonial.quote}</p>
+                  {index === activeTestimonial && (
+                    <motion.div
+                      layoutId="highlight"
+                      className="absolute inset-0 border-2 border-grape-400 rounded-lg"
+                      initial={false}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30
+                      }}
                     />
-                  </div>
-                  <div>
-                    <div className="text-white font-medium">{testimonial.name}</div>
-                    <div className="text-gray-400 text-sm">{testimonial.role}</div>
-                  </div>
-                </div>
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 text-yellow-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-300">{testimonial.quote}</p>
-                {index === activeTestimonial && (
-                  <motion.div
-                    layoutId="highlight"
-                    className="absolute inset-0 border-2 border-grape-400 rounded-lg"
-                    initial={false}
-                    transition={{
-                      type: "spring",
-                      stiffness: 500,
-                      damping: 30
-                    }}
-                  />
-                )}
-              </motion.div>
-            ))}
+                  )}
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Mobile Navigation Dots */}
+            <div className="flex justify-center gap-2 md:hidden mb-8">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTestimonial(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === activeTestimonial ? 'bg-grape-400 w-4' : 'bg-grape-600'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Mobile Navigation Arrows */}
+            <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 flex justify-between pointer-events-none md:hidden">
+              <button
+                onClick={() => handleSwipe(-1)}
+                className="w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center pointer-events-auto"
+              >
+                ←
+              </button>
+              <button
+                onClick={() => handleSwipe(1)}
+                className="w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center pointer-events-auto"
+              >
+                →
+              </button>
+            </div>
           </div>
+
           <div className="max-w-2xl mx-auto">
             <div className="bg-gradient-to-r from-grape-900/50 via-grape-800/30 to-grape-900/50 p-8 rounded-2xl text-center">
               <h3 className="text-2xl font-bold text-white mb-4">Join Our Newsletter</h3>

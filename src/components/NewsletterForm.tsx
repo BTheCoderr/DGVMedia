@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Google Analytics Event
+const trackSubscribe = (status: 'success' | 'error') => {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('event', 'newsletter_subscription', {
+      event_category: 'engagement',
+      event_label: status,
+      value: status === 'success' ? 1 : 0
+    });
+  }
+};
+
 export default function NewsletterForm() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -23,12 +34,14 @@ export default function NewsletterForm() {
         setStatus('success');
         setMessage('Thanks for subscribing! Check your email for confirmation.');
         setEmail('');
+        trackSubscribe('success');
       } else {
         throw new Error(data.error || 'Failed to subscribe');
       }
     } catch (error) {
       setStatus('error');
       setMessage(error instanceof Error ? error.message : 'Failed to subscribe');
+      trackSubscribe('error');
     }
 
     // Reset status after 5 seconds
