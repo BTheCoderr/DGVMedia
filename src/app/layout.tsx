@@ -4,7 +4,11 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Script from "next/script";
-import FloatingNewsletter from "@/components/FloatingNewsletter";
+import dynamic from 'next/dynamic';
+
+const FloatingNewsletter = dynamic(() => import('@/components/FloatingNewsletter'), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
