@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-const SENDGRID_LIST_ID = process.env.SENDGRID_LIST_ID;
+// Configure Zoho Mail transporter
+const transporter = nodemailer.createTransport({
+  host: 'smtp.zoho.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.ZOHO_EMAIL,
+    pass: process.env.ZOHO_PASSWORD,
+  },
+});
 
 export async function POST(request: Request) {
   try {
@@ -15,38 +24,43 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!SENDGRID_API_KEY || !SENDGRID_LIST_ID) {
+    if (!process.env.ZOHO_EMAIL || !process.env.ZOHO_PASSWORD) {
       return NextResponse.json(
-        { error: 'SendGrid configuration is missing' },
+        { error: 'Email configuration is missing' },
         { status: 500 }
       );
     }
 
-    // Add contact to SendGrid
-    const response = await fetch('https://api.sendgrid.com/v3/marketing/contacts', {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${SENDGRID_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        list_ids: [SENDGRID_LIST_ID],
-        contacts: [
-          {
-            email,
-            custom_fields: {
-              source: 'website_signup',
-              signup_date: new Date().toISOString(),
-            }
-          }
-        ]
-      })
+    // Send confirmation email
+    await transporter.sendMail({
+      from: process.env.ZOHO_EMAIL,
+      to: email,
+      subject: 'Welcome to Da Grapevine Newsletter!',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #6d28d9;">Welcome to Da Grapevine!</h2>
+          <p>Thank you for subscribing to our newsletter. You'll now receive the latest updates on:</p>
+          <ul>
+            <li>Raw, unfiltered community stories</li>
+            <li>Breaking news and investigations</li>
+            <li>Community events and initiatives</li>
+            <li>Exclusive content and interviews</li>
+          </ul>
+          <p>Stay tuned for our next update!</p>
+          <div style="margin-top: 20px; padding: 10px; background-color: #6d28d9; color: white; text-align: center;">
+            The truth and the juice, straight from the vine.
+          </div>
+        </div>
+      `,
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to subscribe');
-    }
+    // Also send notification to admin
+    await transporter.sendMail({
+      from: process.env.ZOHO_EMAIL,
+      to: process.env.ADMIN_EMAIL || process.env.ZOHO_EMAIL,
+      subject: 'New Newsletter Subscriber',
+      text: `New subscriber: ${email} joined at ${new Date().toLocaleString()}`,
+    });
 
     return NextResponse.json(
       { message: 'Successfully subscribed to newsletter' },

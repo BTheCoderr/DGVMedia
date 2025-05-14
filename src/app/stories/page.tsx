@@ -4,35 +4,19 @@ import { motion } from 'framer-motion';
 import Section from '@/components/Section';
 import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import Link from 'next/link';
+import { stories } from '@/data/stories';
+import Image from 'next/image';
+import { useState } from 'react';
 
-const stories = [
-  {
-    id: 1,
-    title: "The Voice of the Streets",
-    category: "Community",
-    date: "March 15, 2024",
-    excerpt: "Exploring the untold stories of local artists and their impact on community culture.",
-    image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3"
-  },
-  {
-    id: 2,
-    title: "City Council Uncovered",
-    category: "Politics",
-    date: "March 14, 2024",
-    excerpt: "An inside look at the latest city council decisions affecting our community.",
-    image: "https://images.unsplash.com/photo-1577495508048-b635879837f1?ixlib=rb-4.0.3"
-  },
-  {
-    id: 3,
-    title: "Youth Movement Rising",
-    category: "Education",
-    date: "March 13, 2024",
-    excerpt: "How local youth are taking charge and making changes in their neighborhoods.",
-    image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3"
-  }
-];
+const categories = ['All', 'Community', 'Politics', 'Culture', 'Education'] as const;
 
 export default function Stories() {
+  const [selectedCategory, setSelectedCategory] = useState<typeof categories[number]>('All');
+
+  const filteredStories = selectedCategory === 'All' 
+    ? stories 
+    : stories.filter(story => story.category === selectedCategory);
+
   return (
     <main className="min-h-screen bg-black pt-24">
       <Section>
@@ -50,12 +34,17 @@ export default function Stories() {
 
         {/* Categories */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {['All', 'Community', 'Politics', 'Culture', 'Education'].map((category) => (
+          {categories.map((category) => (
             <motion.button
               key={category}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 rounded-full border border-grape-600 text-grape-400 hover:bg-grape-600 hover:text-white transition-colors"
+              className={`px-4 py-2 rounded-full border border-grape-600 transition-colors ${
+                selectedCategory === category 
+                  ? 'bg-grape-600 text-white' 
+                  : 'text-grape-400 hover:bg-grape-600 hover:text-white'
+              }`}
+              onClick={() => setSelectedCategory(category)}
             >
               {category}
             </motion.button>
@@ -64,7 +53,7 @@ export default function Stories() {
 
         {/* Stories Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {stories.map((story, index) => (
+          {filteredStories.map((story, index) => (
             <motion.article
               key={story.id}
               initial={{ opacity: 0, y: 20 }}
@@ -73,10 +62,14 @@ export default function Stories() {
               whileHover={{ y: -5 }}
               className="bg-gradient-to-b from-grape-900/50 to-black rounded-lg overflow-hidden"
             >
-              <div 
-                className="h-48 bg-cover bg-center"
-                style={{ backgroundImage: `url(${story.image})` }}
-              />
+              <div className="relative h-48">
+                <Image
+                  src={story.image}
+                  alt={story.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-grape-400 text-sm">{story.category}</span>
@@ -85,7 +78,7 @@ export default function Stories() {
                 <h3 className="text-white font-semibold text-xl mb-2">{story.title}</h3>
                 <p className="text-gray-400 text-sm mb-4">{story.excerpt}</p>
                 <Link 
-                  href={`/stories/${story.id}`}
+                  href={`/stories/${story.slug}`}
                   className="text-grape-400 hover:text-grape-300 text-sm font-medium inline-flex items-center"
                 >
                   Read Full Story
