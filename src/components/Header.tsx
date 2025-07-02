@@ -27,14 +27,14 @@ export default function Header() {
                 <div className="relative w-10 h-10">
                   <Image
                     src="/logo.svg"
-                    alt="Da Grapevine Logo"
+                    alt="Da GrapeVine Logo"
                     fill
                     className="object-contain"
                     priority
                   />
                 </div>
-                <span className="text-xl font-bold text-white">
-                  Da <span className="text-grape-400">Grape</span>vine
+                <span className="text-xl font-bold text-logo-gray">
+                  Da <span className="text-grape-400">Grape</span>Vine
                 </span>
               </Link>
             </motion.div>

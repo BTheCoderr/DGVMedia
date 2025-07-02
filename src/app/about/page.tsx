@@ -61,10 +61,15 @@ export default function About() {
           className="text-center mb-16"
         >
           <h1 className="text-4xl font-bold text-white mb-6">Our Mission</h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Da Grapevine is dedicated to bridging the gap between the streets and the system,
-            bringing you raw, unfiltered stories that mainstream media overlooks.
-          </p>
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-grape-400 mb-6">DGV Mission Statement</h2>
+            <p className="text-lg text-gray-300 leading-relaxed">
+              Da Grape Vine exists to put that power back into the hands of the people. We amplify inner-city and minority voices, uncover the stories mainstream media ignores, provide these communities with relevant information to improve their quality of life, and create a platform where these communities can tell their own truths, on their own terms.
+            </p>
+            <p className="text-lg text-gray-300 leading-relaxed mt-4">
+              What makes us stand out is we're not trying to whitewash reality. We're actually giving the whole story—the good, the bad and the ugly that comes out of these communities.
+            </p>
+          </div>
         </motion.div>
       </Section>
 
@@ -90,7 +95,7 @@ export default function About() {
       <Section>
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-4">Our Team</h2>
-          <p className="text-gray-400">Meet the faces behind Da Grapevine</p>
+          <p className="text-gray-400">Meet the faces behind Da GrapeVine</p>
         </div>
 
         {team.map((department) => (

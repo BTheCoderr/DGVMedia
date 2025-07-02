@@ -22,16 +22,19 @@ export default function Footer() {
     <footer className="bg-black border-t border-grape-800/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-4 gap-8">
-          {/* Logo and Description */}
+          {/* Logo and Mission Statement */}
           <div className="col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <span className="text-xl font-bold text-white">
-                Da <span className="text-grape-400">Grape</span>vine
+              <span className="text-xl font-bold text-logo-gray">
+                Da <span className="text-grape-400">Grape</span>Vine
               </span>
             </Link>
-            <p className="text-gray-400 text-sm">
-              Raw. Real. Unfiltered news and stories from the communities that mainstream media overlooks.
-            </p>
+            <div className="mb-4">
+              <h4 className="text-grape-400 font-semibold mb-2">Our Mission</h4>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Da Grape Vine exists to put that power back into the hands of the people. We amplify inner-city and minority voices, uncover the stories mainstream media ignores, and create a platform where these communities can tell their own truths, on their own terms.
+              </p>
+            </div>
           </div>
 
           {/* Navigation */}
@@ -74,7 +77,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-grape-800/30">
           <p className="text-center text-gray-400 text-sm">
-            © {new Date().getFullYear()} Da Grapevine. All rights reserved.
+            © {new Date().getFullYear()} Da GrapeVine. All rights reserved.
           </p>
         </div>
       </div>
