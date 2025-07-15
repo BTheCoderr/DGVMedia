@@ -1,9 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import Section from '@/components/Section';
 import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import Image from 'next/image';
+import { shows, Show } from '@/data/shows';
 
 const team = [
   {
@@ -50,6 +52,8 @@ const values = [
 ];
 
 export default function About() {
+  const [selectedShow, setSelectedShow] = useState<Show | null>(null);
+
   return (
     <main className="min-h-screen bg-black pt-24">
       {/* Hero Section */}
@@ -73,8 +77,71 @@ export default function About() {
         </motion.div>
       </Section>
 
-      {/* Values Section */}
+      {/* Views From Da Vine Section */}
       <Section gradient>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-white mb-4">Views From Da Vine</h2>
+          <p className="text-gray-400">Our signature shows that give voice to the community</p>
+        </div>
+
+        {/* Shows Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {shows.map((show, index) => (
+            <motion.div
+              key={show.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="cursor-pointer"
+              onClick={() => setSelectedShow(show)}
+            >
+              <div className="p-6 rounded-lg bg-black/50 border border-grape-800/30 hover:border-grape-600/50 transition-all duration-300">
+                <h3 className="text-xl font-bold text-grape-400 mb-2">{show.title}</h3>
+                <p className="text-sm text-gray-400 italic mb-3">{show.tagline}</p>
+                <div className="text-xs text-gray-500">
+                  Click to learn more
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Selected Show Details */}
+        {selectedShow && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-black/70 border border-grape-800/50 rounded-lg p-8 mb-8"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-grape-400 mb-2">{selectedShow.title}</h3>
+                <p className="text-lg text-gray-300 italic">{selectedShow.tagline}</p>
+              </div>
+              <button
+                onClick={() => setSelectedShow(null)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="prose prose-invert max-w-none">
+              {selectedShow.description.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="text-gray-300 leading-relaxed mb-4">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </Section>
+
+      {/* Values Section */}
+      <Section>
         <div className="grid md:grid-cols-3 gap-8">
           {values.map((value, index) => (
             <motion.div
@@ -92,7 +159,7 @@ export default function About() {
       </Section>
 
       {/* Team Section */}
-      <Section>
+      <Section gradient>
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-4">Our Team</h2>
           <p className="text-gray-400">Meet the faces behind Da GrapeVine</p>
@@ -128,7 +195,7 @@ export default function About() {
       </Section>
 
       {/* Newsletter Section */}
-      <Section gradient className="rounded-2xl">
+      <Section className="rounded-2xl">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">Join Our Movement</h2>
           <p className="text-gray-400">Subscribe to our newsletter and be part of the change.</p>

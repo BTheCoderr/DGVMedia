@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingNewsletterWrapper from '@/components/FloatingNewsletterWrapper';
+import NavigationWrapper from '@/components/NavigationWrapper';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,10 +49,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-black text-white min-h-screen`}>
-        <Header />
-        {children}
-        <FloatingNewsletterWrapper />
-        <Footer />
+        <NavigationWrapper>
+          {children}
+        </NavigationWrapper>
       </body>
     </html>
   );

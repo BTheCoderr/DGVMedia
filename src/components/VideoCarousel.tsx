@@ -2,55 +2,47 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface Video {
-  id: string;
-  title: string;
-  embedUrl: string;
-  subheader: string;
-  category: string;
-  showTitle: string;
-}
-
-const videos: Video[] = [
-  {
-    id: '1',
-    title: 'The Duck Making All His Dreams Come True',
-    embedUrl: 'https://www.youtube.com/embed/81tGeRX-An4?si=EuuN_r1mMCkRSEe5',
-    subheader: 'The Duck Making All His Dreams Come True',
-    category: 'culture',
-    showTitle: 'Views From Da Vine'
-  },
-  // Add more videos here as needed for different shows
-];
+import { shows, Show } from '@/data/shows';
 
 const showCategories = [
   { id: 'views', title: 'Views From Da Vine', description: 'Culture & Community Stories' },
   { id: 'studio', title: 'Studio Live', description: 'Music & Entertainment' },
   { id: 'politics', title: 'Purple Party Politics', description: 'Political Coverage' },
-  { id: 'sports', title: 'Ball of Frame', description: 'Local Sports' },
-  { id: 'firewood', title: 'Firewood', description: 'Community Discussions' },
-  { id: 'walkball', title: 'Walk N Ball', description: 'Morning Quarters' },
+  { id: 'sports', title: 'Ball of Fame', description: 'Local Sports' },
+  { id: 'firewood', title: 'Tap In', description: 'Community Discussions' },
+  { id: 'walkball', title: 'Wake n\' Bake', description: 'Morning Quarters' },
   { id: 'nightcap', title: 'Night Cap', description: 'Evening Quarters' },
   { id: 'allegedly', title: 'Allegedly', description: 'Crime & Justice' },
   { id: 'police', title: 'Shady Shields', description: 'Police Accountability' },
-  { id: 'murders', title: 'Dead on Arrival', description: 'True Crime' },
-  { id: 'pullup', title: 'The Pull Up', description: 'Events & Nightlife' }
+  { id: 'murders', title: 'Blood on the Block', description: 'True Crime' },
+  { id: 'pullup', title: 'Out N\' About', description: 'Events & Nightlife' }
 ];
 
+// Map show slugs to category IDs for backward compatibility
+const showSlugToCategory: Record<string, string> = {
+  'views-from-da-vine': 'views',
+  'studio-live': 'studio',
+  'purple-party-politics': 'politics',
+  'ball-of-fame': 'sports',
+  'allegedly': 'allegedly',
+  'tap-in': 'firewood',
+  'wake-n-bake': 'walkball',
+  'night-cap': 'nightcap',
+  'shady-shields': 'police',
+  'blood-on-the-block': 'murders',
+  'out-n-about': 'pullup'
+};
+
 export default function VideoCarousel() {
-  const [currentVideo, setCurrentVideo] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('views');
 
-  const nextVideo = () => {
-    setCurrentVideo((prev) => (prev + 1) % videos.length);
-  };
-
-  const prevVideo = () => {
-    setCurrentVideo((prev) => (prev - 1 + videos.length) % videos.length);
-  };
-
   const currentShow = showCategories.find(show => show.id === selectedCategory) || showCategories[0];
+  
+  // Find the corresponding show from our shows data
+  const selectedShow = shows.find(show => {
+    const categoryId = showSlugToCategory[show.slug];
+    return categoryId === selectedCategory;
+  });
 
   return (
     <div className="relative">
@@ -81,34 +73,32 @@ export default function VideoCarousel() {
       </div>
       
       <div className="relative max-w-4xl mx-auto">
-        {videos.length > 0 ? (
+        {selectedShow ? (
+          /* Show Description and Picture Section */
           <AnimatePresence mode="wait">
             <motion.div
-              key={currentVideo}
+              key={selectedShow.id}
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.3 }}
               className="relative"
             >
-              <div className="aspect-video rounded-2xl overflow-hidden bg-black">
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={videos[currentVideo].embedUrl}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                  className="w-full h-full"
-                />
+              <div className="aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-grape-900/50 to-black border border-grape-800/30">
+                {/* Placeholder for show image - will become clickable link */}
+                <div className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-grape-800/20 transition-colors">
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">📺</div>
+                    <h4 className="text-2xl font-bold text-white mb-2">{selectedShow.title}</h4>
+                    <p className="text-gray-400">Show Image Coming Soon</p>
+                  </div>
+                </div>
               </div>
               
-              {/* Video Subheader */}
+              {/* Show Tagline Overlay */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
                 <h4 className="text-xl font-bold text-white text-center">
-                  {videos[currentVideo].subheader}
+                  {selectedShow.tagline}
                 </h4>
               </div>
             </motion.div>
@@ -123,53 +113,25 @@ export default function VideoCarousel() {
             </div>
           </div>
         )}
-
-        {/* Navigation Arrows - Only show if more than one video */}
-        {videos.length > 1 && (
-          <>
-            <button
-              onClick={prevVideo}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-            </button>
-            
-            <button
-              onClick={nextVideo}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
-          </>
-        )}
-
-        {/* Dots Indicator - Only show if more than one video */}
-        {videos.length > 1 && (
-          <div className="flex justify-center mt-6 space-x-2">
-            {videos.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentVideo(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${
-                  index === currentVideo ? 'bg-grape-400' : 'bg-gray-600'
-                }`}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Show Description for Selected Category */}
-      <div className="max-w-2xl mx-auto mt-8 text-center">
-        <div className="bg-black/50 rounded-lg p-6">
-          <h4 className="text-grape-400 font-semibold mb-2">About {currentShow.title}</h4>
-          <p className="text-gray-400 text-sm">
-            {getShowDescription(selectedCategory)}
-          </p>
+      <div className="max-w-4xl mx-auto mt-8">
+        <div className="bg-black/50 rounded-lg p-8">
+          <h4 className="text-grape-400 font-semibold mb-4 text-center">About {currentShow.title}</h4>
+          {selectedShow ? (
+            <div className="prose prose-invert max-w-none">
+              {selectedShow.description.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="text-gray-300 leading-relaxed mb-4 text-center">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400 text-sm text-center">
+              {getShowDescription(selectedCategory)}
+            </p>
+          )}
         </div>
       </div>
     </div>
