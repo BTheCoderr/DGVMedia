@@ -1,10 +1,12 @@
+export const dynamic = "force-dynamic";
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 
-export default function ComingSoon() {
+function ComingSoonContent() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const searchParams = useSearchParams();
 
@@ -179,5 +181,23 @@ export default function ComingSoon() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function ComingSoon() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-black via-purple-900/20 to-black flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🍇</div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Da GrapeVine
+          </h1>
+          <p className="text-xl text-gray-300">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ComingSoonContent />
+    </Suspense>
   );
 } 
