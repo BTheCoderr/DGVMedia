@@ -34,16 +34,21 @@ function ComingSoonContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const formData = new FormData(e.target as HTMLFormElement);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
     
     try {
-      const response = await fetch('/api/subscribe', {
+      // Submit directly to Netlify Forms
+      const response = await fetch('/', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
       });
       
       if (response.ok) {
         setIsSubmitted(true);
+        // Clear the form
+        form.reset();
       } else {
         console.error('Form submission failed');
         // Still show success for better UX
@@ -117,6 +122,8 @@ function ComingSoonContent() {
                 onSubmit={handleSubmit}
                 data-netlify="true"
                 name="coming-soon-signup"
+                method="POST"
+                action="/"
                 className="space-y-6"
               >
                 {/* Netlify form fields */}
